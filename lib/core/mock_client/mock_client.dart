@@ -27,17 +27,19 @@ class MockHttpClientBuilder {
   Future<String> _getResponseByPath(String path) async {
     switch (path) {
       case 'articles':
-        return await _readResponseFromAsset('assets/rest/article/get_articles.json');
+        return await _readResponseFromAsset(
+            'assets/rest/article/get_articles.json');
       case 'article':
-        return await _readResponseFromAsset('assets/rest/article/get_articles.json');
+        return await _readResponseFromAsset(
+            'assets/rest/article/get_articles.json');
       case 'people':
-        return await _readResponseFromAsset('assets/rest/people/get_people.json');
+        return await _readResponseFromAsset(
+            'assets/rest/people/get_people.json');
       default:
         throw NotFoundException(path);
     }
   }
 
-  Future<String> _readResponseFromAsset(String assetPath) async {
-    return rootBundle.loadString(assetPath);
-  }
+  Future<String> _readResponseFromAsset(String assetPath) async =>
+      rootBundle.loadString(assetPath);
 }

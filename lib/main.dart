@@ -1,11 +1,6 @@
-import 'package:chopper_json_serializable/core/mock_client/mock_client.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
-  final httpClient = MockHttpClientBuilder().generateClient();
-  httpClient.get(
-    Uri(path: 'articles'),
-  );
   runApp(MyApp());
 }
 
