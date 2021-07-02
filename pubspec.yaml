@@ -22,9 +22,10 @@ dev_dependencies:
   json_serializable: ^4.1.3
   build_runner: ^2.0.5
   chopper_generator: ^4.0.1
+  http: ^0.13.3
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/rest/article
-    - assets/rest/people
+    - assets/rest/article/
+    - assets/rest/people/
