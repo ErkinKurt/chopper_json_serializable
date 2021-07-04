@@ -1,11 +1,35 @@
+import 'dart:convert';
+
+import 'package:chopper/chopper.dart';
+import 'package:chopper_json_serializable/core/chopper_client.dart';
+import 'package:chopper_json_serializable/core/mock_http_client.dart';
+import 'package:chopper_json_serializable/models/article/article.dart';
+import 'package:chopper_json_serializable/models/people/people.dart';
+import 'package:chopper_json_serializable/services/article_service/article_service.dart';
+import 'package:chopper_json_serializable/services/people_service/people_service.dart';
 import 'package:flutter/material.dart';
+import 'package:japx/japx.dart';
 
 void main() async {
-  runApp(MyApp());
+  final mockHttpClient = MockHttpClientBuilder().generateClient();
+
+  final chopperClient = ChopperClientBuilder.buildChopperClient(
+    [
+      ArticleService.create(),
+      PeopleService.create(),
+    ],
+    mockHttpClient,
+  );
+  runApp(MyApp(
+    chopperClient: chopperClient,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({Key? key, required this.chopperClient}) : super(key: key);
+
+  final ChopperClient chopperClient;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,28 +37,31 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+        chopperClient: chopperClient,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({
+    Key? key,
+    required this.title,
+    required this.chopperClient,
+  }) : super(key: key);
 
   final String title;
+  final ChopperClient chopperClient;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  Article? _article;
+  People? _person;
 
   @override
   Widget build(BuildContext context) {
@@ -44,23 +71,56 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+            Column(
+              children: [
+                Text(
+                  'Chopper Client and Services',
+                ),
+                Text('Article: ${_article?.title ?? 'XOXO'}'),
+                Text('People: ${_person?.name ?? 'Cuneyt Arkin'}'),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: _getArticle,
+                  child: Text('Fetch Article'),
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                ElevatedButton(
+                  onPressed: _getPerson,
+                  child: Text('Fetch People'),
+                ),
+              ],
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
+  }
+
+  Future<void> _getArticle() async {
+    final response =
+        await widget.chopperClient.getService<ArticleService>().getArticle('1');
+    final body = Japx.decode(json.decode(response.body));
+    final article = Article.fromJsonFactory(body['data']);
+    setState(() {
+      _article = article;
+    });
+  }
+
+  Future<void> _getPerson() async {
+    final response =
+        await widget.chopperClient.getService<PeopleService>().getPerson('1');
+    final body = Japx.decode(json.decode(response.body));
+    final person = People.fromJsonFactory(body['data']);
+    setState(() {
+      _person = person;
+    });
   }
 }

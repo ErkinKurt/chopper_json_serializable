@@ -25,14 +25,15 @@ class MockHttpClientBuilder {
   }
 
   Future<String> _getResponseByPath(String path) async {
-    switch (path) {
+    final subPath = path.substring('myBaseUrl'.length + 1);
+    switch (subPath) {
       case 'articles':
         return await _readResponseFromAsset(
             'assets/rest/article/get_articles.json');
-      case 'article':
+      case 'articles/1':
         return await _readResponseFromAsset(
             'assets/rest/article/get_articles.json');
-      case 'people':
+      case 'people/1':
         return await _readResponseFromAsset(
             'assets/rest/people/get_people.json');
       default:
