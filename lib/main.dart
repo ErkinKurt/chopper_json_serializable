@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chopper/chopper.dart';
 import 'package:chopper_json_serializable/core/chopper_client.dart';
 import 'package:chopper_json_serializable/core/mock_http_client.dart';
@@ -8,7 +6,6 @@ import 'package:chopper_json_serializable/models/people/people.dart';
 import 'package:chopper_json_serializable/services/article_service/article_service.dart';
 import 'package:chopper_json_serializable/services/people_service/people_service.dart';
 import 'package:flutter/material.dart';
-import 'package:japx/japx.dart';
 
 void main() async {
   final mockHttpClient = MockHttpClientBuilder().generateClient();
@@ -107,20 +104,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _getArticle() async {
     final response =
         await widget.chopperClient.getService<ArticleService>().getArticle('1');
-    final body = Japx.decode(json.decode(response.body));
-    final article = Article.fromJsonFactory(body['data']);
     setState(() {
-      _article = article;
+      _article = response.body;
     });
   }
 
   Future<void> _getPerson() async {
     final response =
         await widget.chopperClient.getService<PeopleService>().getPerson('1');
-    final body = Japx.decode(json.decode(response.body));
-    final person = People.fromJsonFactory(body['data']);
     setState(() {
-      _person = person;
+      _person = response.body;
     });
   }
 }

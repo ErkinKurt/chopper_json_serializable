@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart';
+import 'package:chopper_json_serializable/models/people/people.dart';
 
 part 'people_service.chopper.dart';
 
@@ -8,7 +9,7 @@ abstract class PeopleService extends ChopperService {
       _$PeopleService(client);
 
   @Get(path: "/{person_id}")
-  Future<Response> getPerson(
+  Future<Response<People>> getPerson(
     @Path('person_id') String personId,
   );
 }

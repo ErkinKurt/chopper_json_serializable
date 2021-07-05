@@ -17,9 +17,9 @@ class _$PeopleService extends PeopleService {
   final definitionType = PeopleService;
 
   @override
-  Future<Response<dynamic>> getPerson(String personId) {
+  Future<Response<People>> getPerson(String personId) {
     final $url = '/people/$personId';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<dynamic, dynamic>($request);
+    return client.send<People, People>($request);
   }
 }

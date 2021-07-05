@@ -17,9 +17,9 @@ class _$ArticleService extends ArticleService {
   final definitionType = ArticleService;
 
   @override
-  Future<Response<dynamic>> getArticle(String articleId) {
+  Future<Response<Article>> getArticle(String articleId) {
     final $url = '/articles/$articleId';
     final $request = Request('GET', $url, client.baseUrl);
-    return client.send<dynamic, dynamic>($request);
+    return client.send<Article, Article>($request);
   }
 }
