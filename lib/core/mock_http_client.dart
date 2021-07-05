@@ -1,12 +1,8 @@
 import "dart:async";
+import 'package:chopper_json_serializable/core/exceptions.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-
-class NotFoundException implements Exception {
-  final String message;
-  NotFoundException([this.message = '']);
-}
 
 class MockHttpClientBuilder {
   MockClient generateClient() {
@@ -15,7 +11,7 @@ class MockHttpClientBuilder {
         try {
           final response = await _getResponseByPath(request.url.path);
           return http.Response(response, 200);
-        } on NotFoundException catch (e) {
+        } on PathNotFoundException catch (e) {
           return http.Response(e.message, 404);
         } catch (e) {
           return http.Response('Server Error', 500);
@@ -37,7 +33,7 @@ class MockHttpClientBuilder {
         return await _readResponseFromAsset(
             'assets/rest/people/get_people.json');
       default:
-        throw NotFoundException(path);
+        throw PathNotFoundException(path);
     }
   }
 
