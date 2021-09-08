@@ -6,10 +6,10 @@ import 'package:japx/japx.dart';
 class JsonSerializableConverter extends JsonConverter {
   @override
   Response<ResultType> convertResponse<ResultType, Item>(Response response) {
-    final jsonRes = super.convertResponse(response);
-    final flatJson = Japx.decode(jsonRes.body);
-    return jsonRes.copyWith<ResultType>(
-        body: JsonTypeParser.decode<Item>(flatJson['data']));
+    final jsonRes = super.convertResponse<dynamic, dynamic>(response);
+    final dynamic body = Japx.decode(jsonRes.body! as Map<String, dynamic>);
+    final dynamic decodedItem = JsonTypeParser.decode<Item>(body["data"]);
+    return jsonRes.copyWith<ResultType>(body: decodedItem as ResultType);
   }
 
   @override
@@ -18,8 +18,9 @@ class JsonSerializableConverter extends JsonConverter {
 
   @override
   Response convertError<BodyType, InnerType>(Response response) {
-    final jsonRes = super.convertError(response);
-    final responseError = JsonTypeParser.decode<ResponseError>(jsonRes.body);
-    return jsonRes.copyWith(bodyError: responseError);
+    final jsonRes = super.convertError<BodyType, InnerType>(response);
+    final dynamic body = jsonRes.body;
+    final dynamic responseError = JsonTypeParser.decode<ResponseError>(body);
+    return jsonRes.copyWith<BodyType>(bodyError: responseError as BodyType);
   }
 }

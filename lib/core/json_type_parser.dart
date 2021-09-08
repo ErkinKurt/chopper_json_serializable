@@ -2,7 +2,7 @@ import 'package:chopper_json_serializable/core/exceptions.dart';
 import 'package:chopper_json_serializable/models/article/article.dart';
 import 'package:chopper_json_serializable/models/people/people.dart';
 
-typedef T JsonFactory<T>(Map<String, dynamic> json);
+typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 
 class JsonTypeParser {
   static const Map<Type, JsonFactory> factories = {
@@ -10,7 +10,7 @@ class JsonTypeParser {
     People: People.fromJsonFactory,
   };
 
-  static dynamic decode<T>(entity) {
+  static dynamic decode<T>(dynamic entity) {
     if (entity is Iterable) return _decodeList<T>(entity);
 
     if (entity is Map<String, dynamic>) return _decodeMap<T>(entity);
@@ -29,5 +29,5 @@ class JsonTypeParser {
   }
 
   static List<T> _decodeList<T>(Iterable values) =>
-      values.where((v) => v != null).map<T>((v) => decode<T>(v)).toList();
+      values.where((dynamic v) => v != null).map((dynamic v) => decode<T>(v) as T).toList();
 }
