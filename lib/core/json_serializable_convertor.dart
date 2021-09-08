@@ -7,8 +7,11 @@ class JsonSerializableConverter extends JsonConverter {
   @override
   Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     final jsonRes = super.convertResponse<dynamic, dynamic>(response);
-    final dynamic body = Japx.decode(jsonRes.body! as Map<String, dynamic>);
-    final dynamic decodedItem = JsonTypeParser.decode<Item>(body["data"]);
+    if (jsonRes.body == null || (jsonRes.body is String && (jsonRes.body as String).isEmpty)) {
+      return jsonRes.copyWith(body: null);
+    }
+    final dynamic body = Japx.decode(jsonRes.body["data"]! as Map<String, dynamic>);
+    final dynamic decodedItem = JsonTypeParser.decode<Item>(body);
     return jsonRes.copyWith<ResultType>(body: decodedItem as ResultType);
   }
 
